@@ -15,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -23,9 +22,12 @@ import android.widget.EditText;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 import yanews.malygin.tim.yanews.R;
+import yanews.malygin.tim.yanews.api.Api;
+import yanews.malygin.tim.yanews.api.ApiKeys;
+import yanews.malygin.tim.yanews.api.methods.ApiMethod;
+import yanews.malygin.tim.yanews.api.methods.RegistrationMethod;
 import yanews.malygin.tim.yanews.ui.activity.MainActivity;
 import yanews.malygin.tim.yanews.util.Constant;
 import yanews.malygin.tim.yanews.util.ViewUtils;
@@ -33,11 +35,12 @@ import yanews.malygin.tim.yanews.util.ViewUtils;
 import static yanews.malygin.tim.yanews.util.IntentUtil.showActivity;
 import static yanews.malygin.tim.yanews.util.ViewUtils.findById;
 
-public class RegistrationFragment extends Fragment implements OnCompleteListener<AuthResult>, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class RegistrationFragment extends Fragment implements TextWatcher, CompoundButton.OnCheckedChangeListener, RegistrationMethod.RegistrationResult {
 
     private EditText loginView;
     private EditText passwordView;
     private MenuItem registrationMenu;
+    private RegistrationMethod registrationMethod;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,11 +59,13 @@ public class RegistrationFragment extends Fragment implements OnCompleteListener
 
         ViewCompat.setTransitionName(loginView, Constant.LOGIN_TRANSITION_NAME);
         ViewCompat.setTransitionName(passwordView, Constant.PASSWORD_TRANSITION_NAME);
+        registrationMethod = Api.createMethod(ApiKeys.REGISTRATION);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        registrationMethod.setCallback(this);
         loginView.addTextChangedListener(this);
         passwordView.addTextChangedListener(this);
     }
@@ -76,6 +81,7 @@ public class RegistrationFragment extends Fragment implements OnCompleteListener
     @Override
     public void onStop() {
         super.onStop();
+        registrationMethod.cancel();
         loginView.removeTextChangedListener(this);
         passwordView.removeTextChangedListener(this);
     }
@@ -83,20 +89,11 @@ public class RegistrationFragment extends Fragment implements OnCompleteListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_registration) {
-            FirebaseAuth auth = FirebaseAuth.getInstance();
             final String login = loginView.getText().toString();
             final String password = passwordView.getText().toString();
-            auth.createUserWithEmailAndPassword(login, password)
-                    .addOnCompleteListener(this);
+            registrationMethod.setRegistrationData(login, password).send();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onComplete(@NonNull Task<AuthResult> task) {
-        if (task.isSuccessful()) {
-            showActivity(getActivity(), MainActivity.class);
-        }
     }
 
     @Override
@@ -139,5 +136,10 @@ public class RegistrationFragment extends Fragment implements OnCompleteListener
         passwordView.setInputType(InputType.TYPE_CLASS_TEXT | (isChecked ?
                 InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 : InputType.TYPE_TEXT_VARIATION_PASSWORD));
+    }
+
+    @Override
+    public void succes() {
+        showActivity(getActivity(), MainActivity.class);
     }
 }

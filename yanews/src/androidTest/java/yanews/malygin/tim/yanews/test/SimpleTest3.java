@@ -11,6 +11,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
+import android.util.SparseArray;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,11 +25,14 @@ import org.junit.runners.MethodSorters;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import yanews.malygin.tim.yanews.*;
+import yanews.malygin.tim.yanews.api.Api;
+import yanews.malygin.tim.yanews.api.ApiKeys;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 import yanews.malygin.tim.yanews.ui.activity.LoginActivity;
 import yanews.malygin.tim.yanews.ui.activity.MainActivity;
@@ -47,6 +51,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.fail;
 
+import yanews.malygin.tim.yanews.R;
+
 /**
  * "login@test.ru", "password1"
  */
@@ -58,26 +64,35 @@ public class SimpleTest3 {
     @Rule
     public ActivityTestRule<LoginActivity> loginActivityRule
             = new ActivityTestRule<LoginActivity>(LoginActivity.class, false, false);
+    private Map<Integer, SimpleIdlingResource> idleResources;
 
-    private SimpleIdlingResource idlingResource;
 
     @Before
     public void init() {
         Intents.init();
-        loginActivityRule.launchActivity(new Intent());
         // создаем idlingResources для прослушивания авторизации
-        idlingResource = new SimpleIdlingResource(true);
+        idleResources = new HashMap<>();
+        Api.idleResources = idleResources;
+        idleResources.put(ApiKeys.LOGIN, new SimpleIdlingResource(true, "auth"));
+        idleResources.put(ApiKeys.LOGOUT, new SimpleIdlingResource(true, "logout"));
+        idleResources.put(ApiKeys.REGISTRATION, new SimpleIdlingResource(true, "registration"));
+        idleResources.put(ApiKeys.DELETE_USER, new SimpleIdlingResource(true, "delete_user"));
+
         // регистрируем его для прослушивания
-        Espresso.registerIdlingResources(idlingResource);
+        for(SimpleIdlingResource idlingResource: idleResources.values()) {
+            Espresso.registerIdlingResources(idlingResource);
+        }
+
+        loginActivityRule.launchActivity(new Intent());
     }
 
     @After
     public void release() {
         Intents.release();
-        if (idlingResource != null) {
-            // отписываемся от idlingResources
-            Espresso.unregisterIdlingResources(idlingResource);
-            getInstrumentation().waitForIdleSync();
+        if(idleResources!=null) {
+            for (SimpleIdlingResource idlingResource : idleResources.values()) {
+                Espresso.unregisterIdlingResources(idlingResource);
+            }
         }
     }
 
@@ -101,7 +116,7 @@ public class SimpleTest3 {
         // проверяем что мы на форме логина
         Assert.assertEquals(getActivityInstance().getClass(), LoginActivity.class);
         // переходим на activity с регистрацией
-        onView(ViewMatchers.withId(yanews.malygin.tim.yanews.R.id.registration))
+        onView(ViewMatchers.withId(R.id.registration))
                 .check(matches(isDisplayed()))
                 .perform(click());
         // проверяем что мы перешли
@@ -117,23 +132,19 @@ public class SimpleTest3 {
         // проверяем что мы на форме логина
         Assert.assertEquals(getActivityInstance().getClass(), LoginActivity.class);
 
-
-        // устанавливаем в activity idlingresources
-        loginActivityRule.getActivity().forTestInit(idlingResource);
-
         // вводим логин и пароль
-        onView(ViewMatchers.withId(yanews.malygin.tim.yanews.R.id.login_text))
+        onView(ViewMatchers.withId(R.id.login_text))
                 .perform(typeText("login@test.ru"));
-        onView(ViewMatchers.withId(yanews.malygin.tim.yanews.R.id.password_text))
+        onView(ViewMatchers.withId(R.id.password_text))
                 .perform(typeText("password1"));
         // пытаемся авторизоваться
-        onView(ViewMatchers.withId(yanews.malygin.tim.yanews.R.id.login))
+        onView(ViewMatchers.withId(R.id.login))
                 .check(matches(isEnabled()))
                 .perform(click());
         // проверяем что мы авторизовались успешно
         Assert.assertEquals(getActivityInstance().getClass(), MainActivity.class);
         // сбрасываем авторизацию
-        onView(ViewMatchers.withId(yanews.malygin.tim.yanews.R.id.action_exit))
+        onView(ViewMatchers.withId(R.id.action_exit))
                 .perform(click());
         // проверяем что после сброса мы снова на форме логина
         Assert.assertEquals(getActivityInstance().getClass(), LoginActivity.class);

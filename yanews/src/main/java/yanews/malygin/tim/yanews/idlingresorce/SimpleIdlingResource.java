@@ -1,5 +1,6 @@
 package yanews.malygin.tim.yanews.idlingresorce;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
 
@@ -14,13 +15,17 @@ public class SimpleIdlingResource implements IdlingResource {
 
     private final AtomicBoolean isIdleNow;
 
-    public SimpleIdlingResource(boolean isIdling) {
+    @NonNull
+    private final String name;
+
+    public SimpleIdlingResource(boolean isIdling, @NonNull String name) {
         isIdleNow = new AtomicBoolean(isIdling);
+        this.name = name;
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return name;
     }
 
     @Override

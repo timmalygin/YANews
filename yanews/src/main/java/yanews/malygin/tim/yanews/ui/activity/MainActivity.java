@@ -13,10 +13,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import yanews.malygin.tim.yanews.R;
+import yanews.malygin.tim.yanews.api.Api;
+import yanews.malygin.tim.yanews.api.ApiKeys;
+import yanews.malygin.tim.yanews.api.methods.LogoutMethod;
 
 import static yanews.malygin.tim.yanews.util.IntentUtil.showActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LogoutMethod.LogoutResult {
+
+    private LogoutMethod apiMethod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +31,30 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setTitle(getTitle(FirebaseAuth.getInstance().getCurrentUser()));
+        apiMethod = Api.createMethod(ApiKeys.LOGOUT);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        apiMethod.setCallback(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        apiMethod.cancel();
     }
 
     private String getTitle(@NonNull FirebaseUser user) {
         if (user.isAnonymous()) {
             return getString(R.string.str_anonomous);
         }
-        if (TextUtils.isEmpty(user.getDisplayName())) {
+        if (TextUtils.isEmpty(user.getEmail())) {
             return getString(R.string.str_empty_name);
         }
-        return user.getDisplayName();
+        return user.getEmail();
     }
 
     @Override
@@ -50,11 +69,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_exit:
-                FirebaseAuth.getInstance().signOut();
-                showActivity(this, LoginActivity.class);
-                finish();
+                apiMethod.send();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void succes() {
+        showActivity(this, LoginActivity.class);
+        finish();
     }
 }

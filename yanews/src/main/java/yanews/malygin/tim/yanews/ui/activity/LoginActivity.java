@@ -3,7 +3,6 @@ package yanews.malygin.tim.yanews.ui.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
@@ -13,11 +12,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import yanews.malygin.tim.yanews.R;
-import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
+import yanews.malygin.tim.yanews.api.Api;
+import yanews.malygin.tim.yanews.api.ApiKeys;
+import yanews.malygin.tim.yanews.api.methods.LoginMethod;
 import yanews.malygin.tim.yanews.util.Constant;
 import yanews.malygin.tim.yanews.util.ViewUtils;
 
@@ -28,20 +30,14 @@ import static yanews.malygin.tim.yanews.util.ViewUtils.setClickListener;
 /**
  *
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, FirebaseAuth.AuthStateListener, TextWatcher {
-
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     private View loadingView, buttonLogin;
     private EditText loginView, passwordView;
+    private ProgressBar progress;
 
     @Nullable
-    private SimpleIdlingResource idleLogin;
-
-    @VisibleForTesting
-    public void forTestInit(@NonNull SimpleIdlingResource idlingResource){
-        idleLogin = idlingResource;
-    }
+    private LoginMethod apiMethod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginView = findById(this, R.id.login_text);
         passwordView = findById(this, R.id.password_text);
         buttonLogin = findById(this, R.id.login);
+        progress = findById(this, R.id.view_progressbBar);
         setSupportActionBar(ViewUtils.<Toolbar>findById(this, R.id.toolbar));
 
         final ActionBar actionBar = getSupportActionBar();
@@ -65,20 +62,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ViewCompat.setTransitionName(passwordView, Constant.PASSWORD_TRANSITION_NAME);
 
         updateButtonEnabled();
+        apiMethod = Api.createMethod(ApiKeys.LOGIN);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        auth.addAuthStateListener(this);
         loginView.addTextChangedListener(this);
         passwordView.addTextChangedListener(this);
+        apiMethod.setCallback(new LoginMethod.LoginResult() {
+            @Override
+            public void onSucces(@NonNull FirebaseUser user) {
+                super.onSucces(user);
+                loadingView.setVisibility(View.GONE);
+                showActivity(LoginActivity.this, MainActivity.class);
+                finish();
+            }
+        });
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        auth.removeAuthStateListener(this);
+        apiMethod.cancel();
         loginView.removeTextChangedListener(this);
         passwordView.removeTextChangedListener(this);
     }
@@ -87,16 +93,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-                if (idleLogin != null) {
-                    idleLogin.waiting();
-                }
                 loadingView.setVisibility(View.VISIBLE);
+                progress.requestFocus();
                 final String login = loginView.getText().toString();
                 final String password = passwordView.getText().toString();
-                auth.signInWithEmailAndPassword(login, password);
+                apiMethod.setLoginInformation(login, password)
+                        .send();
                 break;
             case R.id.demo:
-                auth.signInAnonymously();
+                apiMethod.send();
                 break;
             case R.id.registration:
                 showActivity(this,
@@ -104,18 +109,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         new Pair<View, String>(loginView, Constant.LOGIN_TRANSITION_NAME),
                         new Pair<View, String>(passwordView, Constant.PASSWORD_TRANSITION_NAME));
                 break;
-        }
-    }
-
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        if (firebaseAuth.getCurrentUser() != null) {
-            if (idleLogin != null) {
-                idleLogin.release();
-            }
-            loadingView.setVisibility(View.GONE);
-            showActivity(this, MainActivity.class);
-            finish();
         }
     }
 
