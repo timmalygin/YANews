@@ -14,9 +14,10 @@ public interface ApiKeys {
     public static final int LOGIN = 0;
     public static final int REGISTRATION = 1;
     public static final int DELETE_USER = 2;
+    public static final int GET_NEWS = 3;
 
     @IntDef({
-            LOGIN, REGISTRATION, LOGOUT, DELETE_USER
+            LOGIN, REGISTRATION, LOGOUT, DELETE_USER, GET_NEWS
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ApiKey{}

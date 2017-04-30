@@ -25,4 +25,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="Title" parent="Base.TextAppearance.AppCompat.Title"/>
+    <style name="Body" parent="Base.TextAppearance.AppCompat.Body1"/>
 </resources>

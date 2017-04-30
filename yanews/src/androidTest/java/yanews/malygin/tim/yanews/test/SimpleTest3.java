@@ -63,7 +63,7 @@ public class SimpleTest3 {
 
     @Rule
     public ActivityTestRule<LoginActivity> loginActivityRule
-            = new ActivityTestRule<LoginActivity>(LoginActivity.class, false, false);
+            = new ActivityTestRule<>(LoginActivity.class, false, false);
     private Map<Integer, SimpleIdlingResource> idleResources;
 
 

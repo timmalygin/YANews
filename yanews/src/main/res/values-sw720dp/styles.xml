@@ -1,0 +1,9 @@
+<resources>
+
+    <style name="Title" parent="Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">24dp</item>
+        </style>
+    <style name="Body" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">18dp</item>
+    </style>
+</resources>

@@ -2,6 +2,10 @@ package yanews.malygin.tim.yanews.api.methods;
 
 import android.support.annotation.Nullable;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import yanews.malygin.tim.yanews.api.ApiKeys;
 import yanews.malygin.tim.yanews.api.ApiResult;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
@@ -10,6 +14,8 @@ import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
  * Created by timofey.malygin on 23/04/2017.
  */
 public abstract class ApiMethod<T extends ApiResult> {
+
+    protected static final Executor executor = Executors.newFixedThreadPool(4);
 
     protected final SimpleIdlingResource idleResources;
 

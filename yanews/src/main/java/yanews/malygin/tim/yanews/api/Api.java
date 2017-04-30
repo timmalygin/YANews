@@ -9,12 +9,14 @@ import java.util.Map;
 
 import yanews.malygin.tim.yanews.api.methods.ApiMethod;
 import yanews.malygin.tim.yanews.api.methods.DeleteUserMethod;
+import yanews.malygin.tim.yanews.api.methods.GetNewsMethod;
 import yanews.malygin.tim.yanews.api.methods.LoginMethod;
 import yanews.malygin.tim.yanews.api.methods.LogoutMethod;
 import yanews.malygin.tim.yanews.api.methods.RegistrationMethod;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 
 import static yanews.malygin.tim.yanews.api.ApiKeys.DELETE_USER;
+import static yanews.malygin.tim.yanews.api.ApiKeys.GET_NEWS;
 import static yanews.malygin.tim.yanews.api.ApiKeys.LOGIN;
 import static yanews.malygin.tim.yanews.api.ApiKeys.LOGOUT;
 import static yanews.malygin.tim.yanews.api.ApiKeys.REGISTRATION;
@@ -40,6 +42,8 @@ public class Api {
                 return (T) new RegistrationMethod(simpleIdlingResource);
             case DELETE_USER:
                 return (T) new DeleteUserMethod(simpleIdlingResource);
+            case GET_NEWS:
+                return (T) new GetNewsMethod(simpleIdlingResource);
         }
         throw new RuntimeException("unknown key "+key);
     }

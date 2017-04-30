@@ -50,7 +50,7 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
 //                    Log.e("LOG", "I can\'t sleep", e);
 //                }
                 if (TextUtils.isEmpty(login)) {
-                    auth.signInAnonymously();
+                    auth.signInAnonymously().addOnCompleteListener(LoginMethod.this);
                 } else {
                     auth.signInWithEmailAndPassword(login, pwd).addOnCompleteListener(LoginMethod.this);
                 }
