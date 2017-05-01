@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="60"
-        />
+        tools:layout="@layout/fragment_main"/>
 
     <View
         android:layout_width="1dp"
@@ -27,5 +27,6 @@
         android:name="yanews.malygin.tim.yanews.ui.fragment.NewsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="40"/>
+        android:layout_weight="40"
+        tools:layout="@layout/fragment_news"/>
 </LinearLayout>

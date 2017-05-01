@@ -36,7 +36,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     @Override
     public void onBindViewHolder(NewsHolder holder, int position) {
-        holder.bind(this.newsList.get(position));
+        holder.bind(getItemPosition(position));
     }
 
     @Override
@@ -44,15 +44,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         return newsList.size();
     }
 
-    public void setNews(@Nullable List<News> news){
+    public void setNews(@Nullable List<News> news) {
         this.newsList.clear();
-        if(news!=null && news.size()>0) {
+        if (news != null && news.size() > 0) {
             this.newsList.addAll(news);
         }
         notifyDataSetChanged();
     }
 
-    static class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public News getItemPosition(int position){
+        return newsList.get(position);
+    }
+
+    public static class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final TextView titleView, bodyView;
         final OnNewsSelectedListener listener;
@@ -65,9 +69,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
             itemView.setOnClickListener(this);
         }
 
-        void bind(@NonNull News news){
+        void bind(@NonNull News news) {
             titleView.setText(news.title);
-            if(bodyView!=null) {
+            if (bodyView != null) {
                 bodyView.setText(news.body);
             }
             itemView.setTag(news);
@@ -80,7 +84,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         }
     }
 
-    public interface OnNewsSelectedListener{
+    public interface OnNewsSelectedListener {
         void onNewsSelect(@NonNull News news);
     }
 }

@@ -3,8 +3,6 @@ package yanews.malygin.tim.yanews.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -22,7 +20,6 @@ import yanews.malygin.tim.yanews.api.methods.LogoutMethod;
 import yanews.malygin.tim.yanews.data.News;
 import yanews.malygin.tim.yanews.ui.adapter.NewsAdapter;
 import yanews.malygin.tim.yanews.ui.fragment.NewsFragment;
-import yanews.malygin.tim.yanews.ui.fragment.NewsTitleFragment;
 
 import static yanews.malygin.tim.yanews.util.IntentUtil.showActivity;
 
@@ -40,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
 
         setTitle(getTitle(FirebaseAuth.getInstance().getCurrentUser()));
         apiMethod = Api.createMethod(ApiKeys.LOGOUT);
-        isPhone = getResources().getBoolean(R.bool.is_phone);
+        isPhone = getResources().getBoolean(R.bool.hasDoublePanel);
     }
 
     @Override
@@ -96,10 +93,8 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
             intent.putExtra(NewsActivity.ARG_NEWS, news);
             startActivity(intent);
         }else{
-            NewsFragment newsFragment = (yanews.malygin.tim.yanews.ui.fragment.NewsFragment) getSupportFragmentManager().findFragmentById(R.id.news);
+            NewsFragment newsFragment = (NewsFragment) getSupportFragmentManager().findFragmentById(R.id.news);
             newsFragment.setNews(news);
         }
     }
-
-
 }
