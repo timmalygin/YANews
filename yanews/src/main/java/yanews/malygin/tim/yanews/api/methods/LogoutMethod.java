@@ -6,10 +6,6 @@ import yanews.malygin.tim.yanews.api.ApiResult;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 import yanews.malygin.tim.yanews.util.ThreadUtil;
 
-/**
- * Created by timofey.malygin on 23/04/2017.
- */
-
 public class LogoutMethod extends ApiMethod<LogoutMethod.LogoutResult> {
 
     public LogoutMethod(SimpleIdlingResource idleResources) {
@@ -29,14 +25,14 @@ public class LogoutMethod extends ApiMethod<LogoutMethod.LogoutResult> {
         });
     }
 
-    void sendCallback() {
+    private void sendCallback() {
         if (isCanceled) return;
         final LogoutResult callback = getCallback();
         if (callback == null) return;
-        callback.succes();
+        callback.success();
     }
 
-    public static interface LogoutResult extends ApiResult {
-         void succes();
+    public interface LogoutResult extends ApiResult {
+         void success();
     }
 }

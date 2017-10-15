@@ -1,5 +1,6 @@
 package yanews.malygin.tim.yanews.api;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.util.SparseArray;
@@ -21,9 +22,6 @@ import static yanews.malygin.tim.yanews.api.ApiKeys.LOGIN;
 import static yanews.malygin.tim.yanews.api.ApiKeys.LOGOUT;
 import static yanews.malygin.tim.yanews.api.ApiKeys.REGISTRATION;
 
-/**
- * Created by timofey.malygin on 23/04/2017.
- */
 public class Api {
 
     //region forTestOnly
@@ -31,6 +29,7 @@ public class Api {
     public static Map<Integer, SimpleIdlingResource> idleResources;
     //endregion
 
+    @NonNull
     public static <T extends ApiMethod> T createMethod(@ApiKeys.ApiKey int key){
         final SimpleIdlingResource simpleIdlingResource = idleResources!=null? idleResources.get(key): null;
         switch (key){

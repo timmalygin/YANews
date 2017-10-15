@@ -14,9 +14,6 @@ import yanews.malygin.tim.yanews.data.News;
 
 import static yanews.malygin.tim.yanews.util.ViewUtils.findById;
 
-/**
- * Created by tim on 30.04.17.
- */
 public class NewsFragment extends Fragment {
 
     private TextView title;
@@ -34,7 +31,9 @@ public class NewsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         title = findById(view, R.id.title);
         body = findById(view, R.id.body);
-        updateUi();
+        if(news!=null) {
+            updateUi();
+        }
     }
 
     public void setNews(@NonNull News news){
@@ -43,7 +42,7 @@ public class NewsFragment extends Fragment {
     }
 
     private void updateUi() {
-        if (title == null || news == null) {
+        if (title == null) {
             return;
         }
 

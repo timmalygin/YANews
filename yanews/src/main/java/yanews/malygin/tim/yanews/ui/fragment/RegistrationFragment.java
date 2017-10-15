@@ -1,7 +1,6 @@
 package yanews.malygin.tim.yanews.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
@@ -19,14 +18,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-
 import yanews.malygin.tim.yanews.R;
 import yanews.malygin.tim.yanews.api.Api;
 import yanews.malygin.tim.yanews.api.ApiKeys;
-import yanews.malygin.tim.yanews.api.methods.ApiMethod;
 import yanews.malygin.tim.yanews.api.methods.RegistrationMethod;
 import yanews.malygin.tim.yanews.ui.activity.MainActivity;
 import yanews.malygin.tim.yanews.util.Constant;
@@ -41,6 +35,7 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     private EditText passwordView;
     private MenuItem registrationMenu;
     private RegistrationMethod registrationMethod;
+    private View loadingView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +50,7 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
 
         loginView = findById(view, R.id.login);
         passwordView = findById(view, R.id.password);
+        loadingView = findById(view, R.id.loading);
         ViewUtils.<CheckBox>findById(view, R.id.visible_pwd).setOnCheckedChangeListener(this);
 
         ViewCompat.setTransitionName(loginView, Constant.LOGIN_TRANSITION_NAME);
@@ -124,11 +120,7 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     }
 
     private boolean isValidEmail(@Nullable CharSequence target) {
-        if (TextUtils.isEmpty(target)) {
-            return false;
-        } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-        }
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     @Override
@@ -139,7 +131,12 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     }
 
     @Override
-    public void succes() {
+    public void loading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void success() {
         showActivity(getActivity(), MainActivity.class);
     }
 }

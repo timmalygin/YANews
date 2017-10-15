@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -51,8 +52,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(ViewUtils.<Toolbar>findById(this, R.id.toolbar));
 
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setLogo(R.mipmap.ic_launcher);
+        if(actionBar!=null) {
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setLogo(R.mipmap.ic_launcher);
+        }
 
         setClickListener(this, R.id.login, this);
         setClickListener(this, R.id.demo, this);
@@ -62,21 +65,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ViewCompat.setTransitionName(passwordView, Constant.PASSWORD_TRANSITION_NAME);
 
         updateButtonEnabled();
-        apiMethod = Api.createMethod(ApiKeys.LOGIN);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        apiMethod = Api.createMethod(ApiKeys.LOGIN);
         loginView.addTextChangedListener(this);
         passwordView.addTextChangedListener(this);
         apiMethod.setCallback(new LoginMethod.LoginResult() {
             @Override
-            public void onSucces(@NonNull FirebaseUser user) {
-                super.onSucces(user);
+            public void showLoading() {
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onSuccess(@NonNull FirebaseUser user) {
+                super.onSuccess(user);
                 loadingView.setVisibility(View.GONE);
                 showActivity(LoginActivity.this, MainActivity.class);
                 finish();
+            }
+
+            @Override
+            public void onError(String msg) {
+                super.onError(msg);
+                loadingView.setVisibility(View.GONE);
+                Toast.makeText(LoginActivity.this, R.string.error_unknown, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -84,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStop() {
         super.onStop();
+        assert apiMethod != null;
         apiMethod.cancel();
         loginView.removeTextChangedListener(this);
         passwordView.removeTextChangedListener(this);
@@ -93,14 +109,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-                loadingView.setVisibility(View.VISIBLE);
                 progress.requestFocus();
                 final String login = loginView.getText().toString();
                 final String password = passwordView.getText().toString();
+                assert apiMethod != null;
                 apiMethod.setLoginInformation(login, password)
                         .send();
                 break;
             case R.id.demo:
+                assert apiMethod != null;
                 apiMethod.send();
                 break;
             case R.id.registration:

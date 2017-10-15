@@ -3,7 +3,6 @@ package yanews.malygin.tim.yanews.api.methods;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -14,10 +13,6 @@ import com.google.firebase.auth.FirebaseUser;
 import yanews.malygin.tim.yanews.api.ApiResult;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 import yanews.malygin.tim.yanews.util.ThreadUtil;
-
-/**
- * Created by timofey.malygin on 23/04/2017.
- */
 
 public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements OnCompleteListener<AuthResult> {
 
@@ -38,20 +33,24 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
     }
 
     @Override
+    void startLoading() {
+        super.startLoading();
+        final LoginResult callback = getCallback();
+        if (callback != null) {
+            callback.showLoading();
+        }
+    }
+
+    @Override
     public void send() {
+        startLoading();
         new Thread(){
             @Override
             public void run() {
                 super.run();
-                startLoading();
-//                try {
-//                    Thread.sleep(6_000l);
-//                } catch (InterruptedException e) {
-//                    Log.e("LOG", "I can\'t sleep", e);
-//                }
                 if (TextUtils.isEmpty(login)) {
                     auth.signInAnonymously().addOnCompleteListener(LoginMethod.this);
-                } else {
+                } else if(!TextUtils.isEmpty(pwd)){
                     auth.signInWithEmailAndPassword(login, pwd).addOnCompleteListener(LoginMethod.this);
                 }
             }
@@ -60,7 +59,7 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
 
     @Override
     public synchronized void onComplete(@NonNull final Task<AuthResult> task) {
-        ThreadUtil.postOnMain(new Runnable() {
+        ThreadUtil.postOnMainDelayed(new Runnable() {
             @Override
             public void run() {
                 sendToCallback(task);
@@ -77,16 +76,21 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
         if (callback == null) {
             return;
         }
-        if (task.isSuccessful()) {
+        if (task.isSuccessful() && auth.getCurrentUser()!=null) {
             FirebaseUser user = auth.getCurrentUser();
-            callback.onSucces(user);
+            callback.onSuccess(user);
         } else {
-            callback.onError(task.getException().getMessage());
+            @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+            final Exception exception = task.getException();
+            callback.onError(exception!=null? exception.getMessage(): "error");
         }
     }
 
-    public static class LoginResult implements ApiResult {
-        public void onSucces(@NonNull FirebaseUser user) {
+    public static abstract class LoginResult implements ApiResult {
+
+        public abstract void showLoading();
+
+        public void onSuccess(@NonNull FirebaseUser user) {
         }
 
         public void onError(String msg) {

@@ -9,13 +9,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import yanews.malygin.tim.yanews.api.ApiResult;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
+import yanews.malygin.tim.yanews.util.ThreadUtil;
 
-/**
- * Created by timofey.malygin on 24/04/2017.
- */
 public class RegistrationMethod extends ApiMethod<RegistrationMethod.RegistrationResult> implements OnCompleteListener<AuthResult> {
 
-    @NonNull
     private String login, pwd;
     private FirebaseAuth auth;
 
@@ -39,15 +36,30 @@ public class RegistrationMethod extends ApiMethod<RegistrationMethod.Registratio
     }
 
     @Override
+    void startLoading() {
+        super.startLoading();
+        final RegistrationResult callback = getCallback();
+        if(callback!=null){
+            callback.loading();
+        }
+    }
+
+    @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         final RegistrationResult callback = getCallback();
         if (!isCanceled && callback != null && task.isSuccessful()) {
-            callback.succes();
+            ThreadUtil.postOnMainDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    callback.success();
+                }
+            });
         }
         finishLoading();
     }
 
-    public static interface RegistrationResult extends ApiResult {
-        void succes();
+    public interface RegistrationResult extends ApiResult {
+        void loading();
+        void success();
     }
 }
