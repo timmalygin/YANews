@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
 
         setTitle(getTitle(FirebaseAuth.getInstance().getCurrentUser()));
         apiMethod = Api.createMethod(ApiKeys.LOGOUT);
-        isPhone = getResources().getBoolean(R.bool.hasDoublePanel);
+        isPhone = getResources().getBoolean(R.bool.isPhone);
     }
 
     @Override
@@ -81,18 +81,18 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
     }
 
     @Override
-    public void succes() {
+    public void success() {
         showActivity(this, LoginActivity.class);
         finish();
     }
 
     @Override
     public void onNewsSelect(@NonNull News news) {
-        if(isPhone){
+        if (isPhone) {
             Intent intent = new Intent(this, NewsActivity.class);
             intent.putExtra(NewsActivity.ARG_NEWS, news);
             startActivity(intent);
-        }else{
+        } else {
             NewsFragment newsFragment = (NewsFragment) getSupportFragmentManager().findFragmentById(R.id.news);
             newsFragment.setNews(news);
         }

@@ -20,12 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="yanews.malygin.tim.yanews.ui.fragment.RegistrationFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout="@layout/fragment_registration"/>
+        android:layout_height="match_parent"></FrameLayout>
+    <!--<fragment-->
+    <!--android:id="@+id/fragment"-->
+    <!--android:name="yanews.malygin.tim.yanews.ui.fragment.RegistrationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+    <!--tools:layout="@layout/fragment_registration"/>-->
 
 </android.support.design.widget.CoordinatorLayout>

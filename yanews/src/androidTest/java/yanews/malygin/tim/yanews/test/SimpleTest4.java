@@ -101,8 +101,10 @@ public class SimpleTest4 {
         // вводим логин и пароль
         onView(ViewMatchers.withId(R.id.login_text))
                 .perform(typeText("login@test.ru"));
+        Espresso.closeSoftKeyboard();
         onView(ViewMatchers.withId(R.id.password_text))
                 .perform(typeText("password1"));
+        Espresso.closeSoftKeyboard();
         // пытаемся авторизоваться
         onView(ViewMatchers.withId(R.id.login))
                 .check(matches(isEnabled()))
@@ -116,7 +118,7 @@ public class SimpleTest4 {
             News news = adapter.getItemPosition(i);
             Espresso.onView(ViewMatchers.withId(R.id.news))
                     .perform(RecyclerViewActions.scrollToHolder(findFriendHolderWithFriend(news)));
-            if(getTargetContext().getResources().getBoolean(R.bool.hasDoublePanel)) {
+            if (getTargetContext().getResources().getBoolean(R.bool.isPhone)) {
                 // Проверяем что есть заголовок
                 Espresso.onView(allOf(
                         withParent(withTagValue(Matchers.<Object>is(news))), withText(news.title)))

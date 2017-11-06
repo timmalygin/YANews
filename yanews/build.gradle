@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "yanews.malygin.tim.yanews"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -14,43 +15,58 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
         }
     }
 }
 
+def espressoVersion=rootProject.property("espresso_version")
+def runnerVersion=rootProject.property("runner_version")
+def firebaseVersion=rootProject.property("firebase_version")
+def powerMockitoVersion = rootProject.property("power_mockito_version")
+def mockitoVersion = rootProject.property("mockito_version")
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile "com.google.android.gms:play-services-gcm:9.0.0"
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile "com.google.android.gms:play-services-gcm:${firebaseVersion}"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.google.firebase:firebase-messaging:10.2.1'
-    compile 'com.google.firebase:firebase-auth:10.2.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.google.firebase:firebase-database:10.2.4'
+    compile "com.google.firebase:firebase-messaging:${firebaseVersion}"
+    compile "com.google.firebase:firebase-auth:${firebaseVersion}"
+    compile 'com.android.support:design:25.4.0'
+    compile "com.google.firebase:firebase-database:${firebaseVersion}"
     //for test
-    compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
+    compile "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}"
 
     testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test:runner:0.5', {
+    testCompile "org.robolectric:robolectric:3.5.1"
+    testCompile 'org.mockito:mockito-core:' + mockitoVersion
+
+    androidTestImplementation("com.android.support.test:runner:${runnerVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })
-    androidTestCompile('com.android.support.test:rules:0.5', {
+    androidTestImplementation("com.android.support.test:rules:${runnerVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })
 
-    androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.2', {
+    androidTestImplementation("com.android.support.test.espresso:espresso-intents:${espressoVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })
-    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2', {
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:${espressoVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:${espressoVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })

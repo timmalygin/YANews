@@ -46,12 +46,12 @@ public class DeleteUserMethod extends ApiMethod<DeleteUserMethod.DeleteResult> i
     void callCallback() {
         final DeleteResult callback = getCallback();
         if (!isCanceled && callback != null) {
-            callback.succes();
+            callback.success();
         }
         finishLoading();
     }
 
     public interface DeleteResult extends ApiResult {
-        void succes();
+        void success();
     }
 }

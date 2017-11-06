@@ -1,7 +1,7 @@
 package yanews.malygin.tim.yanews.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
@@ -19,14 +19,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-
 import yanews.malygin.tim.yanews.R;
 import yanews.malygin.tim.yanews.api.Api;
 import yanews.malygin.tim.yanews.api.ApiKeys;
-import yanews.malygin.tim.yanews.api.methods.ApiMethod;
 import yanews.malygin.tim.yanews.api.methods.RegistrationMethod;
 import yanews.malygin.tim.yanews.ui.activity.MainActivity;
 import yanews.malygin.tim.yanews.util.Constant;
@@ -42,6 +37,14 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     private MenuItem registrationMenu;
     private RegistrationMethod registrationMethod;
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,7 +54,6 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHasOptionsMenu(true);
 
         loginView = findById(view, R.id.login);
         passwordView = findById(view, R.id.password);
@@ -139,7 +141,7 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     }
 
     @Override
-    public void succes() {
+    public void success() {
         showActivity(getActivity(), MainActivity.class);
     }
 }

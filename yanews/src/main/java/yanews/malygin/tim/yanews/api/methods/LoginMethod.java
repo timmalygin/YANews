@@ -3,7 +3,6 @@ package yanews.malygin.tim.yanews.api.methods;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,16 +38,11 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
 
     @Override
     public void send() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
                 startLoading();
-//                try {
-//                    Thread.sleep(6_000l);
-//                } catch (InterruptedException e) {
-//                    Log.e("LOG", "I can\'t sleep", e);
-//                }
                 if (TextUtils.isEmpty(login)) {
                     auth.signInAnonymously().addOnCompleteListener(LoginMethod.this);
                 } else {
@@ -79,14 +73,16 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
         }
         if (task.isSuccessful()) {
             FirebaseUser user = auth.getCurrentUser();
-            callback.onSucces(user);
+            callback.onSuccess(user);
         } else {
-            callback.onError(task.getException().getMessage());
+            final Exception exception = task.getException();
+            callback.onError(exception == null ? "unknown error" : exception.getMessage());
         }
     }
 
     public static class LoginResult implements ApiResult {
-        public void onSucces(@NonNull FirebaseUser user) {
+
+        public void onSuccess(@NonNull FirebaseUser user) {
         }
 
         public void onError(String msg) {

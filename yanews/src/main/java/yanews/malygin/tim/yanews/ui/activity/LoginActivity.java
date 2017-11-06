@@ -72,8 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         passwordView.addTextChangedListener(this);
         apiMethod.setCallback(new LoginMethod.LoginResult() {
             @Override
-            public void onSucces(@NonNull FirebaseUser user) {
-                super.onSucces(user);
+            public void onSuccess(@NonNull FirebaseUser user) {
                 loadingView.setVisibility(View.GONE);
                 showActivity(LoginActivity.this, MainActivity.class);
                 finish();

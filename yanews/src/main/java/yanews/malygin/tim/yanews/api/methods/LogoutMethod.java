@@ -33,10 +33,10 @@ public class LogoutMethod extends ApiMethod<LogoutMethod.LogoutResult> {
         if (isCanceled) return;
         final LogoutResult callback = getCallback();
         if (callback == null) return;
-        callback.succes();
+        callback.success();
     }
 
-    public static interface LogoutResult extends ApiResult {
-         void succes();
+    public interface LogoutResult extends ApiResult {
+        void success();
     }
 }

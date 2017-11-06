@@ -42,12 +42,12 @@ public class RegistrationMethod extends ApiMethod<RegistrationMethod.Registratio
     public void onComplete(@NonNull Task<AuthResult> task) {
         final RegistrationResult callback = getCallback();
         if (!isCanceled && callback != null && task.isSuccessful()) {
-            callback.succes();
+            callback.success();
         }
         finishLoading();
     }
 
-    public static interface RegistrationResult extends ApiResult {
-        void succes();
+    public interface RegistrationResult extends ApiResult {
+        void success();
     }
 }
