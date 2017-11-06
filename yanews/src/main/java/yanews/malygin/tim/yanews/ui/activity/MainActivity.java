@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
 
     private LogoutMethod apiMethod;
     private boolean isPhone;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +36,13 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setTitle(getTitle(FirebaseAuth.getInstance().getCurrentUser()));
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        if(auth!=null && auth.getCurrentUser()!=null) {
+            setTitle(getTitle(auth.getCurrentUser()));
+        }
         apiMethod = Api.createMethod(ApiKeys.LOGOUT);
-        isPhone = getResources().getBoolean(R.bool.isPhone);
+        isPhone = getResources().getBoolean(R.bool.hasDoublePanel);
+        id = "id_"+System.currentTimeMillis()%30;
     }
 
     @Override
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
 
     private String getTitle(@NonNull FirebaseUser user) {
         if (user.isAnonymous()) {
-            return getString(R.string.str_anonomous);
+            return getString(R.string.str_anonymous);
         }
         if (TextUtils.isEmpty(user.getEmail())) {
             return getString(R.string.str_empty_name);
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
 
     @Override
     public void onNewsSelect(@NonNull News news) {
-        if (isPhone) {
+        if(isPhone || id.equals(news.id)){
             Intent intent = new Intent(this, NewsActivity.class);
             intent.putExtra(NewsActivity.ARG_NEWS, news);
             startActivity(intent);

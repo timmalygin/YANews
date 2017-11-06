@@ -14,10 +14,6 @@ import yanews.malygin.tim.yanews.api.ApiResult;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 import yanews.malygin.tim.yanews.util.ThreadUtil;
 
-/**
- * Created by timofey.malygin on 23/04/2017.
- */
-
 public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements OnCompleteListener<AuthResult> {
 
     @Nullable
@@ -37,12 +33,21 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
     }
 
     @Override
+    void startLoading() {
+        super.startLoading();
+        final LoginResult callback = getCallback();
+        if (callback != null) {
+            callback.showLoading();
+        }
+    }
+
+    @Override
     public void send() {
+        startLoading();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                startLoading();
                 if (TextUtils.isEmpty(login)) {
                     auth.signInAnonymously().addOnCompleteListener(LoginMethod.this);
                 } else {
@@ -54,7 +59,7 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
 
     @Override
     public synchronized void onComplete(@NonNull final Task<AuthResult> task) {
-        ThreadUtil.postOnMain(new Runnable() {
+        ThreadUtil.postOnMainDelayed(new Runnable() {
             @Override
             public void run() {
                 sendToCallback(task);
@@ -71,7 +76,7 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
         if (callback == null) {
             return;
         }
-        if (task.isSuccessful()) {
+        if (task.isSuccessful() && auth.getCurrentUser()!=null) {
             FirebaseUser user = auth.getCurrentUser();
             callback.onSuccess(user);
         } else {
@@ -80,7 +85,9 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
         }
     }
 
-    public static class LoginResult implements ApiResult {
+    public static abstract class LoginResult implements ApiResult {
+
+        public abstract void showLoading();
 
         public void onSuccess(@NonNull FirebaseUser user) {
         }

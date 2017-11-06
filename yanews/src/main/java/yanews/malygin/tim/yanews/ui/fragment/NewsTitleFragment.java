@@ -29,6 +29,8 @@ public class NewsTitleFragment extends Fragment implements GetNewsMethod.GetNews
 
     private NewsAdapter adapter;
     private GetNewsMethod method;
+    private View progressView;
+    private RecyclerView newsView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,12 +41,13 @@ public class NewsTitleFragment extends Fragment implements GetNewsMethod.GetNews
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView newsView = findById(view, R.id.news);
-        newsView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new NewsAdapter((NewsAdapter.OnNewsSelectedListener) getActivity());
         method = Api.createMethod(ApiKeys.GET_NEWS);
         method.setCallback(this).send();
 
+        newsView = findById(view, R.id.news);
+        progressView = findById(view, R.id.loading);
+        newsView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new NewsAdapter((NewsAdapter.OnNewsSelectedListener) getActivity());
         newsView.setAdapter(adapter);
     }
 
@@ -55,12 +58,23 @@ public class NewsTitleFragment extends Fragment implements GetNewsMethod.GetNews
     }
 
     @Override
+    public void showLoading() {
+        if(progressView==null) return;
+        progressView.setVisibility(View.VISIBLE);
+        newsView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     public void onNewsLoaded(@NonNull List<News> news) {
+        progressView.setVisibility(View.INVISIBLE);
+        newsView.setVisibility(View.VISIBLE);
         adapter.setNews(news);
     }
 
     @Override
     public void onError(@Nullable String msg) {
+        progressView.setVisibility(View.INVISIBLE);
+        newsView.setVisibility(View.VISIBLE);
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }
 }

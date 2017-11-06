@@ -36,14 +36,8 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     private EditText passwordView;
     private MenuItem registrationMenu;
     private RegistrationMethod registrationMethod;
+    private View loadingView;
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        setRetainInstance(true);
-        setHasOptionsMenu(true);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,9 +48,11 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
 
         loginView = findById(view, R.id.login);
         passwordView = findById(view, R.id.password);
+        loadingView = findById(view, R.id.loading);
         ViewUtils.<CheckBox>findById(view, R.id.visible_pwd).setOnCheckedChangeListener(this);
 
         ViewCompat.setTransitionName(loginView, Constant.LOGIN_TRANSITION_NAME);
@@ -126,11 +122,7 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
     }
 
     private boolean isValidEmail(@Nullable CharSequence target) {
-        if (TextUtils.isEmpty(target)) {
-            return false;
-        } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-        }
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     @Override
@@ -138,6 +130,11 @@ public class RegistrationFragment extends Fragment implements TextWatcher, Compo
         passwordView.setInputType(InputType.TYPE_CLASS_TEXT | (isChecked ?
                 InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 : InputType.TYPE_TEXT_VARIATION_PASSWORD));
+    }
+
+    @Override
+    public void loading() {
+        loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override

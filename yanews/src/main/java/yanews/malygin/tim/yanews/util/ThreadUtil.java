@@ -4,10 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
-/**
- * Created by timofey.malygin on 23/04/2017.
- */
-
 public class ThreadUtil {
 
     public static void postOnMain(@NonNull Runnable run) {
@@ -16,5 +12,9 @@ public class ThreadUtil {
         } else {
             new Handler(Looper.getMainLooper()).post(run);
         }
+    }
+
+    public static void postOnMainDelayed(@NonNull Runnable run) {
+        new Handler(Looper.getMainLooper()).postDelayed(run, 6000L);
     }
 }

@@ -17,9 +17,6 @@ import yanews.malygin.tim.yanews.data.News;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 import yanews.malygin.tim.yanews.util.ThreadUtil;
 
-/**
- * Created by tim on 30.04.17.
- */
 public class GetNewsMethod extends ApiMethod<GetNewsMethod.GetNewsResult> implements Runnable {
 
     public GetNewsMethod(SimpleIdlingResource idleResources) {
@@ -30,6 +27,15 @@ public class GetNewsMethod extends ApiMethod<GetNewsMethod.GetNewsResult> implem
     public void send() {
         startLoading();
         run();
+    }
+
+    @Override
+    void startLoading() {
+        super.startLoading();
+        GetNewsResult callback = getCallback();
+        if (callback != null) {
+            callback.showLoading();
+        }
     }
 
     @Override
@@ -45,7 +51,7 @@ public class GetNewsMethod extends ApiMethod<GetNewsMethod.GetNewsResult> implem
                     News news = data.getValue(News.class);
                     loadedNews.add(news);
                 }
-                ThreadUtil.postOnMain(new Runnable() {
+                ThreadUtil.postOnMainDelayed(new Runnable() {
                     @Override
                     public void run() {
                         callLoaded(loadedNews);
@@ -65,7 +71,7 @@ public class GetNewsMethod extends ApiMethod<GetNewsMethod.GetNewsResult> implem
         });
     }
 
-    void callLoaded(@NonNull List<News> news) {
+    private void callLoaded(@NonNull List<News> news) {
         GetNewsResult callback = getCallback();
         if (callback != null) {
             callback.onNewsLoaded(news);
@@ -73,7 +79,7 @@ public class GetNewsMethod extends ApiMethod<GetNewsMethod.GetNewsResult> implem
         finishLoading();
     }
 
-    void callError(String err) {
+    private void callError(String err) {
         GetNewsResult callback = getCallback();
         if (callback != null) {
             callback.onError(err);
@@ -82,6 +88,9 @@ public class GetNewsMethod extends ApiMethod<GetNewsMethod.GetNewsResult> implem
     }
 
     public interface GetNewsResult extends ApiResult {
+
+        void showLoading();
+
         void onNewsLoaded(@NonNull List<News> news);
 
         void onError(@Nullable String msg);

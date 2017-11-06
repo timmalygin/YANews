@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">YANews</string>
+    <string name="app_fullname">Yet Another News</string>
+    <string name="str_login">Вход</string>
+
+    <string name="str_auth_failed">Ошибка авторизации</string>
+    <string name="action_registration">Создать</string>
+    <string name="str_demo">Пропустить</string>
+    <string name="str_anonymous">Анонимный вход</string>
+    <string name="str_empty_name">Безымянный</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="str_registration">новый аккаунт</string>
+    <string name="str_email_hint">email</string>
+    <string name="str_password_hint">пароль</string>
+    <string name="title_activity_login">Авторизация</string>
+</resources>

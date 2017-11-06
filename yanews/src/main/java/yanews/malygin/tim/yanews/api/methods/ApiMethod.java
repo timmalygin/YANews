@@ -5,24 +5,21 @@ import android.support.annotation.Nullable;
 import yanews.malygin.tim.yanews.api.ApiResult;
 import yanews.malygin.tim.yanews.idlingresorce.SimpleIdlingResource;
 
-/**
- * Created by timofey.malygin on 23/04/2017.
- */
 public abstract class ApiMethod<T extends ApiResult> {
 
-    protected final SimpleIdlingResource idleResources;
+    private final SimpleIdlingResource idleResources;
 
-    protected ApiMethod(SimpleIdlingResource idleResources) {
+    ApiMethod(SimpleIdlingResource idleResources) {
         this.idleResources = idleResources;
     }
 
-    protected void startLoading(){
+    void startLoading(){
         if(idleResources!=null) {
             idleResources.waiting();
         }
     }
 
-    protected void finishLoading(){
+    void finishLoading(){
         if(idleResources!=null) {
             idleResources.release();
         }
@@ -30,7 +27,7 @@ public abstract class ApiMethod<T extends ApiResult> {
 
     public abstract void send();
 
-    protected volatile boolean isCanceled = false;
+    volatile boolean isCanceled = false;
     @Nullable
     private T callback;
 
@@ -44,7 +41,7 @@ public abstract class ApiMethod<T extends ApiResult> {
         isCanceled = true;
     }
 
-    public synchronized T getCallback() {
+    synchronized T getCallback() {
         return callback;
     }
 
