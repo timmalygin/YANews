@@ -37,12 +37,12 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
         setSupportActionBar(toolbar);
 
         final FirebaseAuth auth = FirebaseAuth.getInstance();
-        if(auth!=null && auth.getCurrentUser()!=null) {
+        if (auth != null && auth.getCurrentUser() != null) {
             setTitle(getTitle(auth.getCurrentUser()));
         }
         apiMethod = Api.createMethod(ApiKeys.LOGOUT);
-        isPhone = getResources().getBoolean(R.bool.hasDoublePanel);
-        id = "id_"+System.currentTimeMillis()%30;
+        isPhone = getResources().getBoolean(R.bool.isPhone);
+        id = "id_" + System.currentTimeMillis() % 30;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements LogoutMethod.Logo
 
     @Override
     public void onNewsSelect(@NonNull News news) {
-        if(isPhone || id.equals(news.id)){
+        if (isPhone || id.equals(news.id)) {
             Intent intent = new Intent(this, NewsActivity.class);
             intent.putExtra(NewsActivity.ARG_NEWS, news);
             startActivity(intent);

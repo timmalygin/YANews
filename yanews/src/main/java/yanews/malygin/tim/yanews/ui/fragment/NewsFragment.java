@@ -31,7 +31,7 @@ public class NewsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         title = findById(view, R.id.title);
         body = findById(view, R.id.body);
-        if(news!=null) {
+        if (news != null) {
             updateUi();
         }
     }

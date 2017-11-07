@@ -2,10 +2,7 @@ package yanews.malygin.tim.yanews.api;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
-import android.util.SparseArray;
 
-import java.util.Collections;
 import java.util.Map;
 
 import yanews.malygin.tim.yanews.api.methods.ApiMethod;

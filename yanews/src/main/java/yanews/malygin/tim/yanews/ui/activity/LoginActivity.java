@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(ViewUtils.<Toolbar>findById(this, R.id.toolbar));
 
         final ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null) {
+        if (actionBar != null) {
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setLogo(R.mipmap.ic_launcher);
         }

@@ -23,6 +23,7 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            returnDefaultValues = true
         }
     }
 }
@@ -30,11 +31,9 @@ android {
 def espressoVersion=rootProject.property("espresso_version")
 def runnerVersion=rootProject.property("runner_version")
 def firebaseVersion=rootProject.property("firebase_version")
-def powerMockitoVersion = rootProject.property("power_mockito_version")
 def mockitoVersion = rootProject.property("mockito_version")
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile "com.google.android.gms:play-services-gcm:${firebaseVersion}"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -44,11 +43,9 @@ dependencies {
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
     //for test
     compile "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}"
-
     testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.5.1"
+    testCompile 'org.robolectric:robolectric:3.5.1'
     testCompile 'org.mockito:mockito-core:' + mockitoVersion
-
     androidTestImplementation("com.android.support.test:runner:${runnerVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -57,7 +54,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })
-
     androidTestImplementation("com.android.support.test.espresso:espresso-intents:${espressoVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -70,4 +66,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
     })
+    testCompile fileTree(include: ['*.jar'], dir: 'libs/powermock-easymock-junit-1.7.1')
 }

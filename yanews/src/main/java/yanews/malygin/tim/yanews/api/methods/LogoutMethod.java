@@ -33,6 +33,6 @@ public class LogoutMethod extends ApiMethod<LogoutMethod.LogoutResult> {
     }
 
     public interface LogoutResult extends ApiResult {
-         void success();
+        void success();
     }
 }

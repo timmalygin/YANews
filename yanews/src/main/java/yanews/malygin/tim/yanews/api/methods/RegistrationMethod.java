@@ -39,7 +39,7 @@ public class RegistrationMethod extends ApiMethod<RegistrationMethod.Registratio
     void startLoading() {
         super.startLoading();
         final RegistrationResult callback = getCallback();
-        if(callback!=null){
+        if (callback != null) {
             callback.loading();
         }
     }

@@ -17,5 +17,6 @@ public interface ApiKeys {
             LOGIN, REGISTRATION, LOGOUT, DELETE_USER, GET_NEWS
     })
     @Retention(RetentionPolicy.SOURCE)
-    @interface ApiKey{}
+    @interface ApiKey {
+    }
 }

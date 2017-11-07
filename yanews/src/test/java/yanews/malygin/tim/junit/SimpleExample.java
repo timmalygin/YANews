@@ -1,5 +1,7 @@
 package yanews.malygin.tim.junit;
 
+import android.text.TextUtils;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,6 +21,7 @@ public class SimpleExample {
     public void example_2() {
         int a = 90;
         int min = 10;
+        Assert.assertTrue(TextUtils.isEmpty(null));
         Assert.assertTrue(Math.min(a, min) == min);
     }
 }

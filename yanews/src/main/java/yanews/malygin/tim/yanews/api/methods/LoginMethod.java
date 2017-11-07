@@ -76,7 +76,7 @@ public class LoginMethod extends ApiMethod<LoginMethod.LoginResult> implements O
         if (callback == null) {
             return;
         }
-        if (task.isSuccessful() && auth.getCurrentUser()!=null) {
+        if (task.isSuccessful() && auth.getCurrentUser() != null) {
             FirebaseUser user = auth.getCurrentUser();
             callback.onSuccess(user);
         } else {

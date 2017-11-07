@@ -13,13 +13,13 @@ public abstract class ApiMethod<T extends ApiResult> {
         this.idleResources = idleResources;
     }
 
-    void startLoading(){
+    void startLoading() {
         if(idleResources!=null) {
             idleResources.waiting();
         }
     }
 
-    void finishLoading(){
+    void finishLoading() {
         if(idleResources!=null) {
             idleResources.release();
         }

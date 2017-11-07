@@ -59,7 +59,7 @@ public class NewsTitleFragment extends Fragment implements GetNewsMethod.GetNews
 
     @Override
     public void showLoading() {
-        if(progressView==null) return;
+        if (progressView == null) return;
         progressView.setVisibility(View.VISIBLE);
         newsView.setVisibility(View.INVISIBLE);
     }
