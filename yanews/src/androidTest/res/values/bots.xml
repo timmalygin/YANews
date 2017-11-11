@@ -1,0 +1,4 @@
+<resources>
+    <string name="bot_1_login">login@test.ru</string>
+    <string name="bot_1_pwd">password1</string>
+</resources>

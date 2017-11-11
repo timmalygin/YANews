@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "221297453417-3mmrsvn25o53va914pm8imsd9lh38b0l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "yanews.malygin.tim.yanews",
+            "certificate_hash": "b8e0f673e34733cb9220ce650c8a73465c09654c"
+          }
+        },
+        {
           "client_id": "221297453417-mmsar2hehhf4g67vkrfsv6joklagup99.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "221297453417-mmsar2hehhf4g67vkrfsv6joklagup99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
